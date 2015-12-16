@@ -31,18 +31,31 @@ class Dogbot
       puts YAML.dump list      
     end
 
-    def tmnt_id
-      'C0D117U4A'
-    end
-
-    # search channels for id for name?
-    def say(to:, from: name, text: , link_names: true, as_user: false, icon_url: nil)
+    # chat
+    
+    def say(to:, from: name, text: , link_names: true, as_user: false, icon_url: nil, profile: nil)
+      if profile.present?
+        from = profile.name
+        icon_url = profile.icon_url
+      end
       client.chat_postMessage({channel: to, text: text, username: from, link_names: true, as_user: as_user, icon_url: icon_url})
     end
 
-    def tell_tmnt(text)
-      say(tmnt_id, text)
+    def send_gif(to: , from: name, text: , gif_term: , link_names: true, as_user: false, icon_url: nil, profile: )
+      gif_url = gif(gif_term)
+      message_text = "<#{gif_url} | #{text}>"
+      say(to: to, from: from, link_names: link_names, text: message_text, as_user: as_user, icon_url: icon_url, profile: profile)
     end
+
+    def send_gifs(to: , from: name, text: , gif_term:, link_names: true, as_user: false, icon_url: nil, profile: )
+      gifs = self.gifs(gif_term)
+      say(to: to, from: from, text: text, as_user: as_user, icon_url: icon_url, profile: profile)
+      gifs.map do |g|
+        say(to: to, from: from, text: "<#{g}| >", as_user: as_user, icon_url: icon_url, profile: profile)
+      end
+    end
+
+    # shuffling
 
     def string_shuffle(s)
       s.split("").shuffle.join
@@ -53,6 +66,8 @@ class Dogbot
       tell_tmnt trick_text      
     end
 
+    # giphy
+
     def gif(word)
       gif_url = Giphy.translate(word).original_image.url.to_s
     end
@@ -61,22 +76,24 @@ class Dogbot
       urls = Giphy.search(term).map { |g| g.original_image.url.to_s }
     end
 
-    def send_gif(to: , from: name, text: , gif_term: , link_names: true, as_user: false, icon_url: nil)
-      gif_url = gif(gif_term)
-      message_text = "<#{gif_url} | #{text}>"
-      say(to: to, from: from, link_names: link_names, text: message_text, as_user: as_user, icon_url: icon_url)
+    # interactive
+
+    def interactive
+      puts 'starting interactive mode. type "quit" to quit'
+      iloop
     end
 
-    def send_gifs(to: , from: name, text: , gif_term:, link_names: true, as_user: false, icon_url: nil)
-      gifs = self.gifs(gif_term)
-      say(to: to, from: from, text: text, as_user: as_user, icon_url: icon_url)
-      gifs.map do |g|
-        say(to: to, from: from, text: "<#{g}| >", as_user: as_user, icon_url: icon_url)
-      end
-    end
+    def iloop
+      command = gets.chomp
+      return if command == 'quit'
 
-    def ruby_icon_url
-      'https://pbs.twimg.com/profile_images/449242540110139392/D4JO7BZs.jpeg'
+      # start with ruby bot
+      # make this a command line script
+      # add /join, /profile, /giphy, /giphybomb
+      profile = Profile.ruby
+      say(to: '#tmnt', profile: profile, text: command)
+
+      iloop
     end
 
   end
