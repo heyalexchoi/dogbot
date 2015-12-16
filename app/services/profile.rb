@@ -16,5 +16,13 @@ class Profile
       profile
     end
 
+    def profile_names
+      ['ruby', 'dog']
+    end
+
+    def with_name(name)
+      self.send(name)
+    end
+
   end
 end

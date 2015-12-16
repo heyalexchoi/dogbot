@@ -79,21 +79,8 @@ class Dogbot
     # interactive
 
     def interactive
-      puts 'starting interactive mode. type "quit" to quit'
-      iloop
-    end
-
-    def iloop
-      command = gets.chomp
-      return if command == 'quit'
-
-      # start with ruby bot
-      # make this a command line script
-      # add /join, /profile, /giphy, /giphybomb
-      profile = Profile.ruby
-      say(to: '#tmnt', profile: profile, text: command)
-
-      iloop
+      Interactive.new
+      puts 'interactive mode ended. goodbye'
     end
 
   end
