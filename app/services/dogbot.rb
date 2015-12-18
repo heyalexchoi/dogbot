@@ -43,12 +43,14 @@ class Dogbot
 
     def send_gif(to: , from: name, text: , gif_term: , link_names: true, as_user: false, icon_url: nil, profile: )
       gif_url = gif(gif_term)
+      return if gif_url.blank?
       message_text = "<#{gif_url} | #{text}>"
       say(to: to, from: from, link_names: link_names, text: message_text, as_user: as_user, icon_url: icon_url, profile: profile)
     end
 
     def send_gifs(to: , from: name, text: , gif_term:, link_names: true, as_user: false, icon_url: nil, profile: )
       gifs = self.gifs(gif_term)
+      return if gifs.blank?
       say(to: to, from: from, text: text, as_user: as_user, icon_url: icon_url, profile: profile)
       gifs.map do |g|
         say(to: to, from: from, text: "<#{g}| >", as_user: as_user, icon_url: icon_url, profile: profile)
@@ -69,11 +71,21 @@ class Dogbot
     # giphy
 
     def gif(word)
-      gif_url = Giphy.translate(word).original_image.url.to_s
+      result = Giphy.translate(word)
+      if result.present?
+        gif_url = result.original_image.url.to_s
+      else
+        puts "no gif result for #{word}"
+      end
     end
 
     def gifs(term)
-      urls = Giphy.search(term).map { |g| g.original_image.url.to_s }
+      result = Giphy.search(term)
+      if result.present?
+        urls = Giphy.search(term).map { |g| g.original_image.url.to_s }
+      else
+        puts "no gif results for #{term}"
+      end
     end
 
     # interactive

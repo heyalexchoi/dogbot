@@ -34,6 +34,18 @@ class Interactive
         redo
       end
 
+      if components.first == '/gif'
+        terms = components.drop(1).join
+        Dogbot.send_gif(to: channel, profile: profile, gif_term: terms, text: '')
+        redo
+      end
+
+      if components.first == '/gifs'
+        terms = components.drop(1).join
+        Dogbot.send_gifs(to: channel, profile: profile, gif_term: terms, text: '')
+        redo
+      end
+
       # add /join, /profile, /giphy, /giphybomb
       result = Dogbot.say(to: channel, profile: profile, text: command)
       puts result unless result['ok']
