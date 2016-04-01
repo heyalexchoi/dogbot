@@ -1,3 +1,4 @@
+require 'active_support'
 class Profile
   attr_accessor :name, :icon_url
   class << self

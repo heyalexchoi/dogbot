@@ -1,5 +1,9 @@
 require 'slack'
 require 'giphy'
+require 'active_support'
+require './lib/interactive'
+require './lib/profile'
+
 
 class Dogbot
   class << self
